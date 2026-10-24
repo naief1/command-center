@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+<title>مركز القيادة 4.4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root, [data-theme="dark"] {
+  --bg-main: #0d1117; --bg-panel: #161b22; --bg-box: #21262d; --bg-hover: #30363d;
+  --border: #30363d; --text-main: #c9d1d9; --text-muted: #8b949e;
+  --cyan: #58a6ff; --green: #2ea043; --red: #f85149; --orange: #d29922;
+  --purple: #bc8cff; --yellow: #e3b341;
+}
+[data-theme="light"] {
+  --bg-main: #f0f2f5; --bg-panel: #ffffff; --bg-box: #eaeef2; --bg-hover: #d0d7de;
+  --border: #d0d7de; --text-main: #1f2328; --text-muted: #636e7b;
+  --cyan: #0969da; --green: #1a7f37; --red: #cf222e; --orange: #9a6700;
+  --purple: #8250df; --yellow: #9a6700;
+}
+* { box-sizing: border-box; transition: background-color .25s, color .25s, border-color .25s; }
+body {
+  font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+  background: var(--bg-main); color: var(--text-main);
+  margin: 0; padding: 20px; -webkit-tap-highlight-color: transparent;
+}
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px;
+  flex-wrap: wrap; gap: 10px;
+}
+.header h1 {
+  color: var(--cyan); margin: 0; font-size: 22px; font-weight: 800;
+  display: flex; align-items: center; gap: 10px;
+}
+.header-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.btn-system {
+  background: var(--bg-box); color: var(--text-main); border: 1px solid var(--border);
+  padding: 7px 11px; border-radius: 6px; cursor: pointer; font-size: 12px;
+  font-family: inherit; font-weight: 500; white-space: nowrap;
+}
+.btn-system:hover { background: var(--bg-hover); }
+.btn-system:disabled { cursor: not-allowed; }
+.btn-theme {
+  background: none; border: 1px solid var(--border); color: var(--text-main);
+  padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 15px; line-height: 1;
+}
+.btn-theme:hover { background: var(--bg-box); }
+.btn-action {
+  width: 100%; padding: 11px; border: none; border-radius: 6px;
+  font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 5px;
+  color: white; font-family: inherit;
+}
+.btn-primary { background: var(--cyan); color: #0d1117; }
+.btn-primary:hover { opacity: .9; }
+.act-btn {
+  padding: 5px 8px; border: none; border-radius: 4px; cursor: pointer;
+  font-size: 12px; font-weight: 700; color: white; margin-left: 2px; font-family: inherit;
+}
+.bg-green { background: var(--green); } .bg-orange { background: var(--orange); }
+.bg-purple { background: var(--purple); } .bg-yellow { background: var(--yellow); color: #000; }
+.bg-gray { background: var(--bg-box); color: var(--text-main); border: 1px solid var(--border); }
+.bg-red { background: var(--red); } .bg-cyan { background: var(--cyan); color: #0d1117; }
+.bg-blue { background: #1f6feb; color: white; }
+.txt-green { color: var(--green); } .txt-red { color: var(--red); }
+.txt-cyan { color: var(--cyan); } .txt-orange { color: var(--orange); }
+.txt-yellow { color: var(--yellow); } .txt-purple { color: var(--purple); }
+.txt-muted { color: var(--text-muted); }
+.dashboard {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 12px; margin-bottom: 20px;
+}
+.stat-box {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  padding: 14px; border-radius: 8px; text-align: center;
+}
+.stat-title { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+.stat-val { font-size: 22px; font-weight: 700; }
+.cash-btn { background: none; border: none; font-size: 17px; cursor: pointer; padding: 0 4px; }
+.c-add { color: var(--green); } .c-sub { color: var(--orange); }
+.layout { display: grid; grid-template-columns: 300px 1fr; gap: 18px; }
+@media(max-width:900px) { .layout { grid-template-columns: 1fr; } }
+.panel {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px; margin-bottom: 18px;
+}
+.form-group { margin-bottom: 11px; }
+label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+input[type="text"], input[type="number"], input[type="password"], textarea, select {
+  width: 100%; padding: 9px 10px; background: var(--bg-main);
+  border: 1px solid var(--border); color: var(--text-main);
+  border-radius: 6px; font-size: 14px; font-family: inherit;
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--cyan); }
+textarea { resize: vertical; min-height: 60px; }
+.form-row-2 { display: flex; gap: 8px; margin-bottom: 11px; }
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 10px 5px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--text-muted); font-weight: 500; font-size: 12px; }
+.filter-row { display: flex; gap: 7px; margin-bottom: 13px; flex-wrap: wrap; }
+.filter-row input, .filter-row select { flex: 1; min-width: 100px; padding: 7px 9px; font-size: 13px; }
+.filter-row select { max-width: 130px; }
+.alert-item {
+  display: flex; justify-content: space-between; background: var(--bg-box);
+  padding: 7px 11px; border-radius: 6px; margin-bottom: 7px;
+  font-size: 13px; border-right: 3px solid var(--orange);
+}
+.del-alert { background: none; border: none; color: var(--red); cursor: pointer; font-weight: bold; }
+.sim-result-box {
+  background: var(--bg-box); padding: 13px; border-radius: 8px;
+  margin-top: 13px; border-right: 4px solid var(--yellow); display: none;
+}
+.sim-line { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; }
+.expand-row td {
+  background: var(--bg-box); padding: 12px 14px !important;
+  border-bottom: 2px solid var(--border) !important;
+}
+.note-preview {
+  font-size: 12px; color: var(--text-muted); max-width: 120px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;
+}
+.note-preview:hover, .note-empty:hover { color: var(--cyan); }
+.note-empty { color: var(--border); font-size: 12px; cursor: pointer; }
+.op-badge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
+.op-sell { background: rgba(46,160,67,.15); color: var(--green); }
+.op-delist { background: rgba(248,81,73,.15); color: var(--red); }
+.op-purify { background: rgba(188,140,255,.15); color: var(--purple); }
+.status-badge {
+  display: inline-block; font-size: 11px; padding: 2px 7px;
+  border-radius: 4px; font-weight: 700; min-width: 70px; text-align: center;
+}
+.st-profit { background: rgba(46,160,67,.15); color: var(--green); }
+.st-loss { background: rgba(248,81,73,.15); color: var(--red); }
+.st-tp { background: rgba(227,179,65,.2); color: var(--yellow); }
+.st-sl { background: rgba(248,81,73,.3); color: var(--red); }
+.st-none { background: var(--bg-box); color: var(--text-muted); }
+.fetch-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-left: 5px; vertical-align: middle;
+}
+.fetch-dot.fetching { background: var(--orange); animation: blink 1s infinite; }
+.fetch-dot.ok { background: var(--green); }
+.fetch-dot.err { background: var(--red); }
+@keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,.7); z-index: 1000; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; width: 400px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+}
+.modal-box h3 { margin-top: 0; margin-bottom: 16px; }
+.modal-footer { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+.price-cell-val { cursor: pointer; padding: 2px 5px; border-radius: 3px; }
+.price-cell-val:hover { background: var(--bg-box); }
+.empty-row td {
+  text-align: center; color: var(--text-muted);
+  padding: 28px !important; font-size: 13px;
+}
+#notifBanner {
+  display: none; position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 2000; background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 20px; font-size: 13px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.4); max-width: 380px; width: 90%;
+  animation: slideDown .3s ease;
+}
+#notifBanner.show { display: flex; gap: 10px; align-items: flex-start; }
+@keyframes slideDown { from { opacity: 0; transform: translate(-50%,-6px) } to { opacity: 1; transform: translate(-50%,0) } }
+.notif-icon { font-size: 20px; flex-shrink: 0; }
+.notif-close { margin-right: auto; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0 0 0 8px; }
+.perf-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; margin-top: 14px;
+}
+.perf-card {
+  background: var(--bg-box); border-radius: 6px;
+  padding: 12px 13px; text-align: center;
+}
+.perf-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+.perf-val { font-size: 18px; font-weight: 700; }
+.perf-compare { font-size: 11px; margin-top: 3px; }
+#historyBody tr:hover td { background: var(--bg-box); }
+#historyBody tr:has(.hist-chk:checked) td {
+  background: rgba(88,166,255,.08); border-color: rgba(88,166,255,.2);
+}
+tr.row-sl { background: rgba(248,81,73,.08) !important; }
+tr.row-tp { background: rgba(227,179,65,.08) !important; }
+tr.row-sl td:first-child { border-right: 3px solid var(--red); }
+tr.row-tp td:first-child { border-right: 3px solid var(--yellow); }
+.status-badge.st-sl,
+.status-badge.st-tp {
+  animation: pulseAlert 1.6s infinite;
+}
+@keyframes pulseAlert {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  50%      { box-shadow: 0 0 0 5px transparent; opacity: .75; }
+}
+#alertBar {
+  display: none;
+  background: var(--bg-box);
+  border: 1px solid var(--orange);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 13px;
+  font-size: 13px;
+  align-items: flex-start;
+  gap: 10px;
+  animation: slideDown .3s ease;
+}
+#alertBar.show { display: flex; }
+#alertBar.has-sl { border-color: var(--red); background: rgba(248,81,73,.06); }
+#alertBar .alert-icon { font-size: 20px; flex-shrink: 0; }
+#alertBar .alert-text { flex: 1; line-height: 1.8; }
+#alertBar .alert-chip {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  margin: 0 3px;
+}
+.chip-sl { background: rgba(248,81,73,.15); color: var(--red); }
+.chip-tp { background: rgba(227,179,65,.2); color: var(--yellow); }
+
+.portfolio-switch {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-box);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 4px 4px 8px;
+}
+.portfolio-switch label {
+  font-size: 12px; color: var(--text-muted); margin: 0; white-space: nowrap;
+}
+.portfolio-switch select {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 6px;
+  cursor: pointer;
+  max-width: 180px;
+  margin: 0;
+}
+.portfolio-switch select:focus { outline: none; }
+.market-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tag-us { background: rgba(88,166,255,.15); color: var(--cyan); }
+.tag-sa { background: rgba(46,160,67,.15); color: var(--green); }
+
+/* اختيار نوع السوق */
+.market-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.market-option {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  background: var(--bg-main);
+}
+.market-option:hover { background: var(--bg-box); }
+.market-option.selected {
+  border-color: var(--cyan);
+  background: rgba(88,166,255,.08);
+}
+.market-option .flag { font-size: 28px; display: block; margin-bottom: 6px; }
+.market-option .name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.market-option .desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<!-- ============ مودال الإعدادات ============ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-box">
+    <h3>⚙️ الإعدادات العامة</h3>
+    <div class="form-group">
+      <label>مفتاح Finnhub API (للأسعار الحية — يعمل مع كل المحافظ)</label>
+      <input type="password" id="apiKeyInput" placeholder="من finnhub.io — مجاني">
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin:8px 0;">
+      ملاحظة: Finnhub يغطي السوق الأمريكي فقط. للسوق السعودي، أدخل السعر يدوياً بالنقر على خلية السعر.
+    </p>
+    <div class="modal-footer">
+      <button class="btn-system" onclick="closeModal('settingsModal')">إلغاء</button>
+      <button class="btn-system" style="background:var(--cyan);color:#0d1117;border-color:var(--cyan);" onclick="saveSettings()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ مودال أهداف السهم ============ -->
+<div class="modal-overlay" id="sltpModal">
+  <div class="modal-box">
+    <h3>🎯 أهداف السهم: <span id="sltpSymLabel" class="txt-cyan"></span></h3>
+    <div class="form-group">
+      <label>⛔ حد الخسارة (Stop Loss)</label>
+      <input type="number" id="sltpSL" placeholder="سعر وقف الخسارة" step="0.0001">
+    </div>
+    <div class="form-group">
+      <label>🎯 هدف الربح (Target Price)</label>
+      <input type="number" id="sltpTP" placeholder="سعر الهدف" step="0.0001">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-system" onclick="closeModal('sltpModal')">إلغاء</button>
+      <button class="btn-system" style="background:var(--green);border-color:var(--green);" onclick="saveSLTP()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ مودال عام ============ -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal-box">
+    <h3 id="actionModalTitle"></h3>
+    <div id="actionModalBody"></div>
+    <div class="modal-footer" id="actionModalFooter"></div>
+  </div>
+</div>
+
+<!-- ============ شريط الإشعار ============ -->
+<div id="notifBanner">
+  <span class="notif-icon" id="notifIcon">🔔</span>
+  <div style="flex:1;">
+    <div id="notifTitle" style="font-weight:700;margin-bottom:2px;font-size:13px;"></div>
+    <div id="notifMsg" style="font-size:12px;color:var(--text-muted);"></div>
+  </div>
+  <button class="notif-close" onclick="closeNotifBanner()">✕</button>
+</div>
+
+<!-- ============ الهيدر ============ -->
+<div class="header">
+  <h1>
+    <svg width="24" height="24" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#161b22" />
+      <path d="M20 75 L40 45 L60 55 L80 25" stroke="#58a6ff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="80" cy="25" r="8" fill="#2ea043" />
+    </svg>
+    مركز القيادة 4.4
+    <span class="fetch-dot" id="fetchDot" title="حالة الأسعار"></span>
+  </h1>
+  <div class="header-actions">
+    <div class="portfolio-switch">
+      <label>💼 المحفظة:</label>
+      <select id="portfolioSwitcher" onchange="switchPortfolio(this.value)"></select>
+      <span class="market-tag tag-us" id="marketTag">🇺🇸 أمريكي</span>
+      <button class="btn-system" onclick="openNewPortfolioModal()" title="إنشاء محفظة جديدة" style="padding:4px 8px;font-size:13px;">➕</button>
+      <button class="btn-system" onclick="openPortfolioMenu()" title="خيارات المحفظة" style="padding:4px 8px;font-size:13px;">⚙️</button>
+    </div>
+    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="تبديل الثيم">🌙</button>
+    <button class="btn-system" onclick="refreshPrices()" title="تحديث الأسعار من Finnhub">🔄 أسعار</button>
+    <button class="btn-system" id="undoBtn" onclick="doUndo()" title="تراجع عن آخر عملية">↩ تراجع <span id="undoCount"></span></button>
+    <button class="btn-system" onclick="exportCurrent()" title="تصدير المحفظة الحالية">💾 تصدير</button>
+    <button class="btn-system" onclick="exportAll()" title="تصدير كل المحافظ">📦 تصدير الكل</button>
+    <button class="btn-system" onclick="document.getElementById('importFile').click()">📂 استيراد</button>
+    <button class="btn-system" onclick="openSettings()" title="الإعدادات">⚙️</button>
+    <input type="file" id="importFile" style="display:none" onchange="importData(event)" accept=".json">
+  </div>
+</div>
+
+<!-- ============ لوحة المؤشرات ============ -->
+<div class="dashboard">
+  <div class="stat-box">
+    <div class="stat-title">الكاش المتاح
+      <button class="cash-btn c-add" onclick="manageCash('add')">+</button>
+      <button class="cash-btn c-sub" onclick="manageCash('sub')">-</button>
+    </div>
+    <div class="stat-val txt-cyan" id="uiCash">0.00 $</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-title">قيمة الأسهم (الأساس)</div>
+    <div class="stat-val" id="uiEquity">0.00 $</div>
+  </div>
+  <div class="stat-box" style="border-color:var(--cyan);">
+    <div class="stat-title" style="color:var(--cyan);">ر/خ غير محققة
+      <span style="font-size:10px;margin-right:3px;" id="priceTimestamp"></span>
+    </div>
+    <div class="stat-val" id="uiUnrealized">— $</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-title">صافي الأرباح المحققة</div>
+    <div class="stat-val" id="uiPnl">0.00 $</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-title">معدل الصفقات الرابحة</div>
+    <div class="stat-val txt-orange" id="uiWinRate">0 %</div>
+  </div>
+  <div class="stat-box" style="border-color:var(--purple);">
+    <div class="stat-title" style="color:var(--purple);">صندوق التطهير
+      <button class="cash-btn" style="color:var(--purple);" onclick="payPurification()">💸</button>
+    </div>
+    <div class="stat-val txt-purple" id="uiPurification">0.00 $</div>
+  </div>
+</div>
+
+<!-- ============ لوحة الأداء الشهري ============ -->
+<div class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+    <h3 style="margin:0;font-size:15px;">📅 الأداء الشهري</h3>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="btn-system" id="perfBackToNow" onclick="backToCurrentMonth()" style="padding:6px 10px;font-size:12px;display:none;">↩ الشهر الحالي</button>
+      <select id="perfMonthSelect" onchange="onPerfMonthChange(this.value)" style="max-width:200px;padding:6px 10px;font-size:13px;margin:0;"></select>
+    </div>
+  </div>
+  <div class="perf-grid" id="perfGrid"></div>
+</div>
+
+<!-- ============ التخطيط الرئيسي ============ -->
+<div class="layout">
+
+  <div>
+    <div class="panel">
+      <h3 class="txt-cyan" style="margin-top:0;">فتح مركز جديد</h3>
+      <div class="form-group"><input type="text" id="pSymbol" placeholder="الرمز (مثال: PLUG)"></div>
+      <div class="form-group"><input type="number" id="pShares" placeholder="الكمية"></div>
+      <div class="form-group"><input type="number" id="pPrice" placeholder="السعر المنفذ"></div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:13px;font-size:13px;">
+        <input type="checkbox" id="deductCash" checked style="width:auto;margin:0;cursor:pointer;">
+        <label for="deductCash" style="margin:0;cursor:pointer;">خصم التكلفة من الكاش</label>
+      </div>
+      <button class="btn-action btn-primary" data-action="open-position">إضافة للمحفظة</button>
+    </div>
+
+    <div class="panel" style="border-right:3px solid var(--purple);">
+      <h3 style="color:var(--purple);margin-top:0;margin-bottom:13px;">حاسبة الصفقات</h3>
+      <div class="form-group"><input type="number" id="calcShares" placeholder="الكمية (عدد الأسهم)"></div>
+      <div class="form-group"><input type="number" id="calcPrice" placeholder="سعر السهم المنفذ"></div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn-action bg-red" style="flex:1;font-size:13px;" data-action="calc-buy">حساب الشراء</button>
+        <button class="btn-action bg-green" style="flex:1;font-size:13px;" data-action="calc-sell">حساب البيع</button>
+        <button class="btn-action bg-gray" style="flex:0 0 auto;width:auto;padding:11px 13px;font-size:16px;" data-action="clear-calc" title="مسح الحقول">🗑</button>
+      </div>
+      <div id="calcResultBox" style="margin-top:13px;padding:12px;background:var(--bg-box);border-radius:6px;display:none;font-size:13px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span>قيمة الأسهم الأساسية:</span> <span id="calcBase"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--text-muted);">
+          <span id="calcFeeLabel">عمولة التداول:</span> <span id="calcFee"></span>
+        </div>
+        <div id="calcTaxRow" style="display:flex;justify-content:space-between;margin-bottom:6px;color:var(--text-muted);">
+          <span>الضريبة المضافة (15%):</span> <span id="calcTax"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-weight:bold;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
+          <span id="calcTotalLabel">الإجمالي:</span> <span id="calcTotal" style="font-size:15px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="border-right:3px solid var(--orange);">
+      <h3 class="txt-orange" style="margin-top:0;">تنبيهات وملاحظات</h3>
+      <div style="display:flex;gap:5px;margin-bottom:13px;">
+        <input type="text" id="noteInput" placeholder="أضف تنبيه...">
+        <button class="bg-orange act-btn" style="font-size:17px;padding:5px 13px;" data-action="add-note">+</button>
+      </div>
+      <div id="notesContainer"></div>
+    </div>
+
+    <div class="panel" style="border-right:3px solid var(--yellow);">
+      <h3 class="txt-yellow" style="margin-top:0;">محاكاة DCA Sandbox</h3>
+      <div class="form-row-2">
+        <input type="number" id="simOldShares" placeholder="الكمية الحالية" style="flex:1;">
+        <input type="number" id="simOldPrice" placeholder="المتوسط الحالي" style="flex:1;">
+      </div>
+      <div id="simBatchesContainer">
+        <div class="form-row-2 sim-batch">
+          <input type="number" class="simNewShares" placeholder="كمية الدفعة 1" style="flex:1;">
+          <input type="number" class="simNewPrice" placeholder="السعر المتوقع" style="flex:1;">
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn-action bg-gray" style="flex:1;" data-action="add-sim-batch">+ دفعة</button>
+        <button class="btn-action bg-yellow" style="flex:2;" data-action="calc-sim">احسب</button>
+        <button class="btn-action bg-gray" style="flex:0 0 auto;width:auto;padding:11px 13px;font-size:16px;" data-action="clear-sim" title="مسح الحقول">🗑</button>
+      </div>
+      <div class="sim-result-box" id="simResultBox">
+        <div class="sim-line"><span>إجمالي الأسهم:</span><span id="simResShares" class="txt-cyan" style="font-weight:bold;"></span></div>
+        <div class="sim-line"><span>تكلفة الدفعات الجديدة:</span><span id="simResCost" class="txt-red"></span></div>
+        <div class="sim-line" style="border-top:1px solid var(--border);padding-top:7px;margin-top:7px;">
+          <span>المتوسط الجديد المتوقع:</span>
+          <span id="simResAvg" class="txt-yellow" style="font-weight:bold;font-size:17px;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <h3 style="margin:0 0 13px;">المحفظة النشطة</h3>
+      <div id="alertBar">
+        <span class="alert-icon" id="alertBarIcon">🔔</span>
+        <div class="alert-text" id="alertBarText"></div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>الرمز</th>
+              <th>الكمية</th>
+              <th>المتوسط</th>
+              <th>التكلفة</th>
+              <th>السعر الحالي</th>
+              <th>ر/خ</th>
+              <th>الوضع</th>
+              <th>ملاحظة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="portfolioBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:8px;">
+        <h3 style="margin:0;">أرشيف الصفقات التاريخية</h3>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span id="selectedCount" style="font-size:12px;color:var(--text-muted);display:none;"></span>
+          <button class="btn-system bg-red" id="deleteSelectedBtn" style="display:none;padding:6px 12px;font-size:12px;color:white;border-color:var(--red);" onclick="deleteSelectedHistory()">🗑 حذف المحدد</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <input type="text" id="filterSymbol" placeholder="🔍 بحث بالرمز..." oninput="renderHistory()">
+        <select id="filterType" onchange="renderHistory()">
+          <option value="">كل العمليات</option>
+          <option value="sell">بيع</option>
+          <option value="delist">شطب/إفلاس</option>
+          <option value="purify">تطهير</option>
+        </select>
+        <input type="date" id="filterDateFrom" onchange="renderHistory()" style="max-width:135px;">
+        <input type="date" id="filterDateTo" onchange="renderHistory()" style="max-width:135px;">
+        <button class="btn-system" onclick="clearFilters()" style="padding:7px 9px;font-size:12px;">مسح</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32px;"><input type="checkbox" id="selectAllHistory" title="تحديد الكل" style="cursor:pointer;width:auto;"></th>
+              <th>التاريخ</th>
+              <th>الرمز</th>
+              <th>العملية</th>
+              <th>الكمية</th>
+              <th>الربح/الخسارة</th>
+              <th>تفاصيل</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   إدارة المحافظ المتعددة — مع نوع السوق
+   ============================================================ */
+const PF_LIST_KEY    = 'nk_pf_list';
+const PF_ACTIVE_KEY  = 'nk_pf_active';
+const PF_DATA_PREFIX = 'nk_pf_data_';
+const PF_GLOBAL_KEY  = 'nk_pf_global';
+const THEME_KEY      = 'nk_theme';
+const BACKUP_KEY     = 'nk_last_backup';
+
+let portfoliosList = [];
+let activePortfolioId = 'main';
+let globalSettings = { finnhubKey: '' };
+
+let state = {
+  cash: 0, purification: 0, portfolio: {}, history: [], notes: []
+};
+
+/* ============================================================
+   حساب العمولة حسب نوع السوق
+   ============================================================ */
+function getActiveMarketType() {
+  const p = portfoliosList.find(x => x.id === activePortfolioId);
+  return (p && p.type) ? p.type : 'us';
+}
+
+function getFeeDetails(N, P) {
+  const type = getActiveMarketType();
+  const baseValue = N * P;
+
+  if (type === 'sa') {
+    // السوق السعودي: 0.155% فقط (بدون حد أدنى، بدون ضريبة)
+    const comm = baseValue * 0.00155;
+    return { comm: comm, tax: 0, total: comm, type: 'sa' };
+  } else {
+    // السوق الأمريكي: max(1.99, N × 0.0199)، بحد أقصى 2.99%، ضريبة 15%
+    let comm = N * 0.0199;
+    comm = Math.max(1.99, comm);
+    const maxComm = baseValue * 0.0299;
+    comm = Math.min(comm, maxComm);
+    const tax = comm * 0.15;
+    return { comm: comm, tax: tax, total: comm + tax, type: 'us' };
+  }
+}
+function getFee(N, P) { return getFeeDetails(N, P).total; }
+
+/* ============================================================
+   أدوات إدارة المحافظ
+   ============================================================ */
+function genPortfolioId() {
+  return 'pf_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function loadGlobalSettings() {
+  try {
+    const saved = localStorage.getItem(PF_GLOBAL_KEY);
+    if (saved) globalSettings = JSON.parse(saved);
+  } catch(e) {}
+  if (!globalSettings.finnhubKey) globalSettings.finnhubKey = '';
+}
+function saveGlobalSettings() {
+  localStorage.setItem(PF_GLOBAL_KEY, JSON.stringify(globalSettings));
+}
+
+function loadPortfoliosList() {
+  try {
+    const saved = localStorage.getItem(PF_LIST_KEY);
+    if (saved) portfoliosList = JSON.parse(saved);
+  } catch(e) {}
+
+  // ترحيل من الإصدار القديم
+  if (!portfoliosList || portfoliosList.length === 0) {
+    const oldData = localStorage.getItem('nk_v40_data');
+    const mainId = 'main';
+    portfoliosList = [{ id: mainId, name: 'الرئيسية', type: 'us' }];
+
+    let migratedData = { cash: 0, purification: 0, portfolio: {}, history: [], notes: [] };
+    if (oldData) {
+      try {
+        const parsed = JSON.parse(oldData);
+        migratedData = {
+          cash: parsed.cash || 0,
+          purification: parsed.purification || 0,
+          portfolio: parsed.portfolio || {},
+          history: parsed.history || [],
+          notes: parsed.notes || []
+        };
+        if (parsed.finnhubKey) {
+          globalSettings.finnhubKey = parsed.finnhubKey;
+          saveGlobalSettings();
+        }
+      } catch(e) {}
+    }
+    localStorage.setItem(PF_DATA_PREFIX + mainId, JSON.stringify(migratedData));
+    localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+  }
+
+  // تأكد أن كل محفظة لها نوع (للترحيل من 4.3)
+  let needsSave = false;
+  portfoliosList.forEach(p => {
+    if (!p.type) { p.type = 'us'; needsSave = true; }
+  });
+  if (needsSave) localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+  const active = localStorage.getItem(PF_ACTIVE_KEY);
+  if (active && portfoliosList.find(p => p.id === active)) {
+    activePortfolioId = active;
+  } else {
+    activePortfolioId = portfoliosList[0].id;
+    localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+  }
+}
+
+function loadActivePortfolioData() {
+  const saved = localStorage.getItem(PF_DATA_PREFIX + activePortfolioId);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state = {
+        cash: parsed.cash || 0,
+        purification: parsed.purification || 0,
+        portfolio: parsed.portfolio || {},
+        history: parsed.history || [],
+        notes: parsed.notes || []
+      };
+    } catch(e) {
+      state = { cash: 0, purification: 0, portfolio: {}, history: [], notes: [] };
+    }
+  } else {
+    state = { cash: 0, purification: 0, portfolio: {}, history: [], notes: [] };
+  }
+}
+
+function persistActivePortfolioData() {
+  localStorage.setItem(PF_DATA_PREFIX + activePortfolioId, JSON.stringify(state));
+}
+
+function getActivePortfolioName() {
+  const p = portfoliosList.find(x => x.id === activePortfolioId);
+  return p ? p.name : 'محفظة';
+}
+function getActivePortfolioType() {
+  const p = portfoliosList.find(x => x.id === activePortfolioId);
+  return p ? (p.type || 'us') : 'us';
+}
+
+function renderPortfolioSwitcher() {
+  const sel = document.getElementById('portfolioSwitcher');
+  if (!sel) return;
+  sel.innerHTML = portfoliosList.map(p => {
+    const tag = p.type === 'sa' ? '🇸🇦' : '🇺🇸';
+    return `<option value="${p.id}" ${p.id === activePortfolioId ? 'selected' : ''}>${tag} ${p.name}</option>`;
+  }).join('');
+
+  const tag = document.getElementById('marketTag');
+  if (tag) {
+    const type = getActivePortfolioType();
+    if (type === 'sa') {
+      tag.textContent = '🇸🇦 سعودي';
+      tag.className = 'market-tag tag-sa';
+    } else {
+      tag.textContent = '🇺🇸 أمريكي';
+      tag.className = 'market-tag tag-us';
+    }
+  }
+}
+
+function switchPortfolio(newId) {
+  if (newId === activePortfolioId) return;
+  if (!portfoliosList.find(p => p.id === newId)) return;
+
+  persistActivePortfolioData();
+  activePortfolioId = newId;
+  localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+
+  loadActivePortfolioData();
+  livePrices = {};
+  undoStack = [];
+  selectedPerfMonth = null;
+
+  renderPortfolioSwitcher();
+  updateUI();
+  updateUndoButton();
+
+  const type = getActivePortfolioType();
+  const typeLabel = type === 'sa' ? '🇸🇦 سعودي' : '🇺🇸 أمريكي';
+  showNotif('💼', 'المحفظة النشطة', `${getActivePortfolioName()} (${typeLabel})`, 'var(--cyan)');
+}
+
+/* ============================================================
+   إنشاء محفظة جديدة — مع اختيار النوع
+   ============================================================ */
+let newPortfolioType = 'us';
+
+function openNewPortfolioModal() {
+  newPortfolioType = 'us';
+  showModal('➕ إنشاء محفظة جديدة',
+    `<div class="form-group">
+       <label>اسم المحفظة</label>
+       <input type="text" id="npName" placeholder="مثال: أمريكي / سعودي" style="width:100%;padding:10px;" maxlength="40">
+     </div>
+     <div class="form-group">
+       <label>نوع السوق (يحدد طريقة حساب العمولة)</label>
+       <div class="market-choice">
+         <div class="market-option selected" id="optUS" onclick="selectMarketType('us')">
+           <span class="flag">🇺🇸</span>
+           <div class="name">أمريكي</div>
+           <div class="desc">عمولة $1.99 أو 1.99¢/سهم<br>+ ضريبة 15%</div>
+         </div>
+         <div class="market-option" id="optSA" onclick="selectMarketType('sa')">
+           <span class="flag">🇸🇦</span>
+           <div class="name">سعودي</div>
+           <div class="desc">عمولة 0.155%<br>بدون ضريبة</div>
+         </div>
+       </div>
+     </div>`,
+    () => {
+      const name = fv('npName').trim();
+      if (!name) return showNotif('⚠️','اسم مطلوب','أدخل اسم المحفظة','var(--orange)');
+      if (portfoliosList.find(p => p.name === name)) {
+        return showNotif('⚠️','اسم مكرر','يوجد محفظة بنفس الاسم','var(--orange)');
+      }
+      if (portfoliosList.length >= 20) {
+        return showNotif('⚠️','حد أقصى','لا يمكن إنشاء أكثر من 20 محفظة','var(--orange)');
+      }
+
+      const newId = genPortfolioId();
+      portfoliosList.push({ id: newId, name: name, type: newPortfolioType });
+      localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+      const emptyState = { cash: 0, purification: 0, portfolio: {}, history: [], notes: [] };
+      localStorage.setItem(PF_DATA_PREFIX + newId, JSON.stringify(emptyState));
+
+      closeModal('actionModal');
+
+      persistActivePortfolioData();
+      activePortfolioId = newId;
+      localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+      loadActivePortfolioData();
+      livePrices = {};
+      undoStack = [];
+      selectedPerfMonth = null;
+
+      renderPortfolioSwitcher();
+      updateUI();
+      updateUndoButton();
+      const typeLabel = newPortfolioType === 'sa' ? '🇸🇦 سعودي' : '🇺🇸 أمريكي';
+      showNotif('✅','تم الإنشاء',`${name} — ${typeLabel}`, 'var(--green)');
+    }, '➕ إنشاء', 'background:var(--green);color:white;border-color:var(--green);');
+}
+
+function selectMarketType(type) {
+  newPortfolioType = type;
+  document.getElementById('optUS').classList.toggle('selected', type === 'us');
+  document.getElementById('optSA').classList.toggle('selected', type === 'sa');
+}
+
+/* ============================================================
+   قائمة خيارات المحفظة
+   ============================================================ */
+function openPortfolioMenu() {
+  const name = getActivePortfolioName();
+  const type = getActivePortfolioType();
+  const typeLabel = type === 'sa' ? '🇸🇦 سعودي' : '🇺🇸 أمريكي';
+  showModal(
+    `⚙️ خيارات المحفظة: <span class="txt-cyan">${name}</span> <span style="font-size:12px;color:var(--text-muted);">(${typeLabel})</span>`,
+    `<div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn-system" style="padding:10px;font-size:13px;" onclick="renameCurrentPortfolio()">✏️ إعادة تسمية المحفظة</button>
+      <button class="btn-system" style="padding:10px;font-size:13px;" onclick="changePortfolioType()">🔀 تغيير نوع السوق (${typeLabel})</button>
+      <button class="btn-system" style="padding:10px;font-size:13px;" onclick="duplicateCurrentPortfolio()">📋 نسخ هذه المحفظة</button>
+      <button class="btn-system" style="padding:10px;font-size:13px;background:var(--red);color:white;border-color:var(--red);" onclick="deleteCurrentPortfolio()">🗑 حذف هذه المحفظة</button>
+    </div>`,
+    () => closeModal('actionModal'),
+    'إغلاق', 'background:var(--bg-box);'
+  );
+  setTimeout(() => {
+    const btn = document.getElementById('actionConfirmBtn');
+    if (btn) btn.style.display = 'none';
+  }, 10);
+}
+
+function renameCurrentPortfolio() {
+  const current = getActivePortfolioName();
+  closeModal('actionModal');
+  setTimeout(() => {
+    showModal('✏️ إعادة تسمية',
+      `<input type="text" id="rnName" value="${current}" style="width:100%;padding:10px;" maxlength="40">`,
+      () => {
+        const newName = fv('rnName').trim();
+        if (!newName) return showNotif('⚠️','اسم مطلوب','أدخل اسماً','var(--orange)');
+        if (portfoliosList.find(p => p.id !== activePortfolioId && p.name === newName)) {
+          return showNotif('⚠️','اسم مكرر','يوجد محفظة بنفس الاسم','var(--orange)');
+        }
+        const p = portfoliosList.find(x => x.id === activePortfolioId);
+        if (p) p.name = newName;
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+        renderPortfolioSwitcher();
+        closeModal('actionModal');
+        showNotif('✅','تم التعديل',`الاسم الجديد: ${newName}`,'var(--green)');
+      }, '💾 حفظ', 'background:var(--cyan);color:#0d1117;');
+  }, 150);
+}
+
+function changePortfolioType() {
+  closeModal('actionModal');
+  const currentType = getActivePortfolioType();
+  changeToType = currentType;
+  setTimeout(() => {
+    showModal('🔀 تغيير نوع السوق',
+      `<p style="font-size:13px;margin:0 0 12px;color:var(--text-muted);">
+        هذا التغيير يؤثر فقط على العمليات الجديدة. العمليات المسجّلة سابقاً لا تُعدّل.
+       </p>
+       <div class="market-choice">
+         <div class="market-option ${currentType === 'us' ? 'selected' : ''}" id="chgUS" onclick="selectChangeType('us')">
+           <span class="flag">🇺🇸</span>
+           <div class="name">أمريكي</div>
+           <div class="desc">$1.99 أو 1.99¢/سهم<br>+ ضريبة 15%</div>
+         </div>
+         <div class="market-option ${currentType === 'sa' ? 'selected' : ''}" id="chgSA" onclick="selectChangeType('sa')">
+           <span class="flag">🇸🇦</span>
+           <div class="name">سعودي</div>
+           <div class="desc">0.155%<br>بدون ضريبة</div>
+         </div>
+       </div>`,
+      () => {
+        const p = portfoliosList.find(x => x.id === activePortfolioId);
+        if (p) p.type = changeToType;
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+        renderPortfolioSwitcher();
+        updateUI();
+        closeModal('actionModal');
+        const label = changeToType === 'sa' ? '🇸🇦 سعودي' : '🇺🇸 أمريكي';
+        showNotif('✅','تم التغيير',`النوع الجديد: ${label}`,'var(--green)');
+      }, '💾 حفظ', 'background:var(--cyan);color:#0d1117;');
+  }, 150);
+}
+
+let changeToType = 'us';
+function selectChangeType(type) {
+  changeToType = type;
+  document.getElementById('chgUS').classList.toggle('selected', type === 'us');
+  document.getElementById('chgSA').classList.toggle('selected', type === 'sa');
+}
+
+function duplicateCurrentPortfolio() {
+  closeModal('actionModal');
+  if (portfoliosList.length >= 20) {
+    return showNotif('⚠️','حد أقصى','لا يمكن إنشاء أكثر من 20 محفظة','var(--orange)');
+  }
+  setTimeout(() => {
+    const suggestedName = getActivePortfolioName() + ' - نسخة';
+    const currentType = getActivePortfolioType();
+    dupType = currentType;
+    showModal('📋 نسخ المحفظة',
+      `<p style="font-size:13px;margin:0 0 10px;">سيتم إنشاء محفظة جديدة بنفس البيانات.</p>
+       <input type="text" id="dupName" value="${suggestedName}" style="width:100%;padding:10px;margin-bottom:10px;" maxlength="40">
+       <label style="font-size:12px;">نوع السوق</label>
+       <div class="market-choice">
+         <div class="market-option ${currentType === 'us' ? 'selected' : ''}" id="dupUS" onclick="selectDupType('us')">
+           <span class="flag">🇺🇸</span>
+           <div class="name">أمريكي</div>
+         </div>
+         <div class="market-option ${currentType === 'sa' ? 'selected' : ''}" id="dupSA" onclick="selectDupType('sa')">
+           <span class="flag">🇸🇦</span>
+           <div class="name">سعودي</div>
+         </div>
+       </div>`,
+      () => {
+        const newName = fv('dupName').trim();
+        if (!newName) return showNotif('⚠️','اسم مطلوب','أدخل اسماً','var(--orange)');
+        if (portfoliosList.find(p => p.name === newName)) {
+          return showNotif('⚠️','اسم مكرر','يوجد محفظة بنفس الاسم','var(--orange)');
+        }
+        persistActivePortfolioData();
+        const newId = genPortfolioId();
+        portfoliosList.push({ id: newId, name: newName, type: dupType });
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+        const cloned = JSON.parse(JSON.stringify(state));
+        localStorage.setItem(PF_DATA_PREFIX + newId, JSON.stringify(cloned));
+
+        activePortfolioId = newId;
+        localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+        loadActivePortfolioData();
+        livePrices = {};
+        undoStack = [];
+        selectedPerfMonth = null;
+
+        renderPortfolioSwitcher();
+        updateUI();
+        updateUndoButton();
+        closeModal('actionModal');
+        showNotif('✅','تم النسخ',`${newName} جاهزة`,'var(--green)');
+      }, '📋 نسخ', 'background:var(--cyan);color:#0d1117;');
+  }, 150);
+}
+
+let dupType = 'us';
+function selectDupType(type) {
+  dupType = type;
+  document.getElementById('dupUS').classList.toggle('selected', type === 'us');
+  document.getElementById('dupSA').classList.toggle('selected', type === 'sa');
+}
+
+function deleteCurrentPortfolio() {
+  closeModal('actionModal');
+  if (portfoliosList.length <= 1) {
+    return showNotif('⚠️','لا يمكن الحذف','يجب أن تبقى محفظة واحدة على الأقل','var(--orange)');
+  }
+  const name = getActivePortfolioName();
+  setTimeout(() => {
+    showConfirm(
+      '🗑 حذف المحفظة',
+      `سيتم حذف محفظة "<b>${name}</b>" نهائياً مع كل بياناتها.<br><br><b style="color:var(--red);">لا يمكن التراجع عن هذا الإجراء.</b>`,
+      () => {
+        localStorage.removeItem(PF_DATA_PREFIX + activePortfolioId);
+        portfoliosList = portfoliosList.filter(p => p.id !== activePortfolioId);
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+        activePortfolioId = portfoliosList[0].id;
+        localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+        loadActivePortfolioData();
+
+        livePrices = {};
+        undoStack = [];
+        selectedPerfMonth = null;
+
+        renderPortfolioSwitcher();
+        updateUI();
+        updateUndoButton();
+        closeModal('actionModal');
+        showNotif('🗑','تم الحذف',`حُذفت محفظة "${name}"`,'var(--orange)');
+      }
+    );
+  }, 150);
+}
+
+/* ============================================================
+   متغيرات النظام
+   ============================================================ */
+let undoStack = [];
+const MAX_UNDO = 10;
+let livePrices = {};
+let simBatchCount = 1;
+let currentSLTPSym = null;
+let selectedPerfMonth = null;
+
+/* ============================================================
+   أدوات مساعدة
+   ============================================================ */
+function fmt(n, dec = 2) {
+  if (isNaN(n) || n === null) return "0.00";
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function getDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function fv(id) { return document.getElementById(id)?.value || ''; }
+function fvn(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+
+/* ============================================================
+   حفظ الحالة
+   ============================================================ */
+function saveState(action) {
+  if (action) {
+    undoStack.push({ snap: JSON.stringify(state), action });
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+    updateUndoButton();
+  }
+  persistActivePortfolioData();
+  updateUI();
+}
+
+function updateUndoButton() {
+  const btn = document.getElementById('undoBtn');
+  const cnt = document.getElementById('undoCount');
+  if (!btn || !cnt) return;
+  if (undoStack.length === 0) {
+    btn.disabled = true; btn.style.opacity = '.5'; cnt.innerText = '';
+  } else {
+    btn.disabled = false; btn.style.opacity = '1'; cnt.innerText = `(${undoStack.length})`;
+  }
+}
+
+/* ============================================================
+   الثيم
+   ============================================================ */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+  document.getElementById('themeToggle').innerText = theme === 'dark' ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+/* ============================================================
+   المودالات
+   ============================================================ */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showModal(title, body, onConfirm, btnLabel = '✔ تأكيد', btnStyle = '') {
+  document.getElementById('actionModalTitle').innerHTML = title;
+  document.getElementById('actionModalBody').innerHTML = body;
+  document.getElementById('actionModalFooter').innerHTML =
+    `<button class="btn-system" onclick="closeModal('actionModal')">إلغاء</button>
+     <button class="btn-system" style="${btnStyle}" id="actionConfirmBtn">${btnLabel}</button>`;
+  document.getElementById('actionConfirmBtn').onclick = onConfirm;
+  openModal('actionModal');
+}
+function showConfirm(title, msg, onConfirm) {
+  showModal(title, `<p>${msg}</p>`, onConfirm, '✔ تأكيد', 'background:var(--red);color:white;border:none;');
+}
+
+/* ============================================================
+   الإشعارات
+   ============================================================ */
+let notifTimer = null;
+function showNotif(icon, title, msg, color = 'var(--cyan)', persistent = false) {
+  document.getElementById('notifIcon').innerText = icon;
+  document.getElementById('notifTitle').innerText = title;
+  document.getElementById('notifTitle').style.color = color;
+  document.getElementById('notifMsg').innerText = msg;
+  document.getElementById('notifBanner').classList.add('show');
+  if (notifTimer) clearTimeout(notifTimer);
+  if (!persistent) notifTimer = setTimeout(closeNotifBanner, 4000);
+}
+function closeNotifBanner() {
+  document.getElementById('notifBanner').classList.remove('show');
+  if (notifTimer) clearTimeout(notifTimer);
+}
+
+/* ============================================================
+   الإعدادات العامة
+   ============================================================ */
+function openSettings() {
+  document.getElementById('apiKeyInput').value = globalSettings.finnhubKey || '';
+  openModal('settingsModal');
+}
+function saveSettings() {
+  globalSettings.finnhubKey = fv('apiKeyInput').trim();
+  saveGlobalSettings();
+  closeModal('settingsModal');
+  showNotif('✅', 'تم الحفظ', 'مفتاح Finnhub محفوظ لكل المحافظ', 'var(--green)');
+}
+
+/* ============================================================
+   توجيه الأحداث
+   ============================================================ */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const act = el.dataset.action;
+  const sym = el.dataset.sym;
+  try {
+    if (act === 'open-position') openPosition();
+    else if (act === 'dca') dcaPosition(sym);
+    else if (act === 'sell') sellPosition(sym);
+    else if (act === 'delist') delistPosition(sym);
+    else if (act === 'edit') editPosition(sym);
+    else if (act === 'sltp') openSLTP(sym);
+    else if (act === 'toggle-note') toggleNote(sym);
+    else if (act === 'save-note') saveNote(sym);
+    else if (act === 'edit-price') editLivePrice(sym);
+    else if (act === 'calc-buy') calculateTrade('buy');
+    else if (act === 'calc-sell') calculateTrade('sell');
+    else if (act === 'clear-calc') clearCalcPanel();
+    else if (act === 'clear-sim') clearSimPanel();
+    else if (act === 'add-note') addNote();
+    else if (act === 'add-sim-batch') addSimBatch();
+    else if (act === 'calc-sim') calcSimDCA();
+    else if (act === 'del-note') deleteNote(parseInt(el.dataset.idx));
+  } catch (err) { console.error('Action Error:', err); }
+});
+
+/* ============================================================
+   العمليات الأساسية
+   ============================================================ */
+function openPosition() {
+  const s = fv('pSymbol').toUpperCase().trim();
+  const n = fvn('pShares');
+  const p = fvn('pPrice');
+  const d = document.getElementById('deductCash').checked;
+  if (!s || n <= 0 || p <= 0) return showNotif('⚠️','تنبيه','أدخل رمزاً وكمية وسعراً صحيحين','var(--orange)');
+  const c = (n * p) + getFee(n, p);
+  if (d) state.cash -= c;
+  if (!state.portfolio[s]) state.portfolio[s] = { shares: 0, totalCost: 0, avgPrice: 0, note: '', sl: 0, tp: 0 };
+  state.portfolio[s].shares += n;
+  state.portfolio[s].totalCost += c;
+  state.portfolio[s].avgPrice = state.portfolio[s].totalCost / state.portfolio[s].shares;
+  ['pSymbol','pShares','pPrice'].forEach(i => document.getElementById(i).value = '');
+  saveState(`شراء ${s}`);
+  showNotif('✅','مركز جديد',`${s} — ${fmt(n,0)} سهم`,'var(--green)');
+}
+
+function dcaPosition(sym) {
+  showModal(`تزويد ${sym}`,
+    `<input type="number" id="dn" placeholder="الأسهم" style="width:100%;margin-bottom:10px;padding:10px;">
+     <input type="number" id="dp" placeholder="السعر" style="width:100%;padding:10px;">`,
+    () => {
+      const n = fvn('dn'), p = fvn('dp');
+      if (n > 0 && p > 0) {
+        const c = (n * p) + getFee(n, p);
+        state.cash -= c;
+        state.portfolio[sym].shares += n;
+        state.portfolio[sym].totalCost += c;
+        state.portfolio[sym].avgPrice = state.portfolio[sym].totalCost / state.portfolio[sym].shares;
+        saveState(`تزويد ${sym}`);
+        closeModal('actionModal');
+      }
+    });
+}
+
+function sellPosition(sym) {
+  const pos = state.portfolio[sym];
+  showModal(`بيع ${sym}`,
+    `<p style="font-size:12px;margin:0 0 10px">متوسط: ${fmt(pos.avgPrice,4)}</p>
+     <input type="number" id="sn" placeholder="الكمية" max="${pos.shares}" style="width:100%;margin-bottom:10px;padding:10px;">
+     <input type="number" id="sp" placeholder="سعر البيع" style="width:100%;margin-bottom:10px;padding:10px;">
+     <input type="number" id="spu" placeholder="مبلغ التطهير (اختياري)" style="width:100%;padding:10px;">`,
+    () => {
+      const n = fvn('sn'), p = fvn('sp'), pu = fvn('spu');
+      if (n > 0 && p > 0 && n <= pos.shares) {
+        const c = pos.avgPrice * n;
+        const net = (n * p) - getFee(n, p);
+        state.cash += net;
+        state.portfolio[sym].shares -= n;
+        state.portfolio[sym].totalCost -= c;
+        state.purification += pu;
+        state.history.push({
+          date: getDateStr(), symbol: sym, type: 'sell', shares: n,
+          pnl: net - c,
+          detail: `${fmt(pos.avgPrice,3)} → ${fmt(p,3)}`
+        });
+        if (state.portfolio[sym].shares <= 0) delete state.portfolio[sym];
+        saveState(`بيع ${sym}`);
+        closeModal('actionModal');
+        showNotif('✅','تم البيع',`${sym} — صافي ${fmt(net)}`,'var(--green)');
+      }
+    });
+}
+
+function delistPosition(sym) {
+  showConfirm('شطب السهم', 'سيتم مسح السهم وحساب قيمته كخسارة محققة.', () => {
+    state.history.push({
+      date: getDateStr(), symbol: sym, type: 'delist',
+      shares: state.portfolio[sym].shares,
+      pnl: -state.portfolio[sym].totalCost,
+      detail: 'شطب/إفلاس'
+    });
+    delete state.portfolio[sym];
+    saveState('شطب ' + sym);
+    closeModal('actionModal');
+  });
+}
+
+function editPosition(sym) {
+  const pos = state.portfolio[sym];
+  showModal(`تعديل ${sym}`,
+    `<input type="number" id="en" value="${pos.shares}" style="width:100%;margin-bottom:10px;padding:10px;">
+     <input type="number" id="ep" value="${pos.avgPrice}" style="width:100%;padding:10px;">`,
+    () => {
+      const n = fvn('en'), p = fvn('ep');
+      if (n <= 0) { delete state.portfolio[sym]; }
+      else {
+        state.portfolio[sym].shares = n;
+        state.portfolio[sym].avgPrice = p;
+        state.portfolio[sym].totalCost = n * p;
+      }
+      saveState('تعديل ' + sym);
+      closeModal('actionModal');
+    });
+}
+
+/* ============================================================
+   الكاش والتطهير
+   ============================================================ */
+function manageCash(op) {
+  showModal(op === 'add' ? 'إيداع كاش' : 'سحب كاش',
+    `<input type="number" id="mc" placeholder="المبلغ" style="width:100%;padding:10px;">`,
+    () => {
+      const v = fvn('mc');
+      if (v > 0) {
+        op === 'add' ? state.cash += v : state.cash -= v;
+        saveState('تعديل الكاش');
+        closeModal('actionModal');
+      }
+    }, 'تأكيد', 'background:var(--cyan);color:#000;');
+}
+
+function payPurification() {
+  if (state.purification <= 0) return showNotif('ℹ️','التطهير','الصندوق فارغ حالياً','var(--cyan)');
+  showModal('إخراج التطهير',
+    `<input type="number" id="pu" placeholder="المبلغ" max="${state.purification}" style="width:100%;padding:10px;">`,
+    () => {
+      const v = fvn('pu');
+      if (v > 0 && v <= state.purification) {
+        state.purification -= v;
+        state.cash -= v;
+        state.history.push({ date: getDateStr(), symbol: 'تطهير', type: 'purify', pnl: -v, detail: 'إخراج تطهير' });
+        saveState('إخراج تطهير');
+        closeModal('actionModal');
+      }
+    });
+}
+
+/* ============================================================
+   الملاحظات على الأسهم
+   ============================================================ */
+function toggleNote(sym) {
+  const r = document.getElementById(`noterow-${sym}`);
+  if (r) {
+    r.style.display = r.style.display === 'none' ? 'table-row' : 'none';
+    if (r.style.display !== 'none') document.getElementById(`noteinput-${sym}`)?.focus();
+  }
+}
+function saveNote(sym) {
+  const el = document.getElementById(`noteinput-${sym}`);
+  if (el) {
+    state.portfolio[sym].note = el.value.trim();
+    saveState(null);
+    toggleNote(sym);
+  }
+}
+
+/* ============================================================
+   التنبيهات العامة
+   ============================================================ */
+function addNote() {
+  const t = fv('noteInput').trim();
+  if (t) {
+    state.notes.push(t);
+    document.getElementById('noteInput').value = '';
+    saveState(null);
+  }
+}
+function deleteNote(idx) { state.notes.splice(idx, 1); saveState(null); }
+function renderNotes() {
+  const c = document.getElementById('notesContainer');
+  c.innerHTML = '';
+  state.notes.forEach((n, i) => {
+    c.innerHTML += `<div class="alert-item"><span>${n}</span>
+      <button class="del-alert" data-action="del-note" data-idx="${i}">×</button></div>`;
+  });
+}
+
+/* ============================================================
+   SL/TP
+   ============================================================ */
+function openSLTP(sym) {
+  currentSLTPSym = sym;
+  const pos = state.portfolio[sym];
+  document.getElementById('sltpSymLabel').innerText = sym;
+  document.getElementById('sltpSL').value = pos.sl || '';
+  document.getElementById('sltpTP').value = pos.tp || '';
+  openModal('sltpModal');
+}
+function saveSLTP() {
+  if (!currentSLTPSym) return;
+  state.portfolio[currentSLTPSym].sl = fvn('sltpSL');
+  state.portfolio[currentSLTPSym].tp = fvn('sltpTP');
+  saveState('تحديث أهداف ' + currentSLTPSym);
+  closeModal('sltpModal');
+  showNotif('✅','تم الحفظ','تم تحديث أهداف السهم','var(--green)');
+}
+
+/* ============================================================
+   تعديل السعر يدوياً
+   ============================================================ */
+function editLivePrice(sym) {
+  showModal('تعديل السعر اللحظي',
+    `<input type="number" id="lp" value="${livePrices[sym] || ''}" style="width:100%;padding:10px;">`,
+    () => {
+      const v = fvn('lp');
+      if (v > 0) {
+        livePrices[sym] = v;
+        updateUI();
+        showNotif('✏️','سعر يدوي',`${sym}: ${fmt(v,3)}`,'var(--orange)');
+      }
+      closeModal('actionModal');
+    });
+}
+
+/* ============================================================
+   حاسبة الصفقات
+   ============================================================ */
+function calculateTrade(type) {
+  const shares = fvn('calcShares');
+  const price = fvn('calcPrice');
+  if (shares <= 0 || price <= 0) {
+    return showNotif('⚠️','تنبيه','أدخل الكمية والسعر بشكل صحيح','var(--orange)');
+  }
+  const baseValue = shares * price;
+  const fees = getFeeDetails(shares, price);
+
+  document.getElementById('calcBase').innerText = fmt(baseValue);
+  document.getElementById('calcFee').innerText = fmt(fees.comm);
+
+  if (fees.type === 'sa') {
+    document.getElementById('calcFeeLabel').innerText = 'عمولة (0.155%):';
+    document.getElementById('calcTaxRow').style.display = 'none';
+  } else {
+    document.getElementById('calcFeeLabel').innerText = 'عمولة التداول:';
+    document.getElementById('calcTaxRow').style.display = 'flex';
+    document.getElementById('calcTax').innerText = fmt(fees.tax);
+  }
+
+  if (type === 'buy') {
+    document.getElementById('calcTotalLabel').innerText = 'الإجمالي المطلوب دفعه (شراء):';
+    document.getElementById('calcTotal').innerText = fmt(baseValue + fees.total);
+    document.getElementById('calcTotal').className = 'txt-red';
+  } else {
+    document.getElementById('calcTotalLabel').innerText = 'الصافي المستلم (بيع):';
+    document.getElementById('calcTotal').innerText = fmt(baseValue - fees.total);
+    document.getElementById('calcTotal').className = 'txt-green';
+  }
+  document.getElementById('calcResultBox').style.display = 'block';
+}
+
+/* ============================================================
+   مسح حقول الحاسبة والمحاكاة
+   ============================================================ */
+function clearCalcPanel() {
+  document.getElementById('calcShares').value = '';
+  document.getElementById('calcPrice').value = '';
+  document.getElementById('calcResultBox').style.display = 'none';
+}
+
+function clearSimPanel() {
+  document.getElementById('simOldShares').value = '';
+  document.getElementById('simOldPrice').value = '';
+  const batches = document.querySelectorAll('#simBatchesContainer .sim-batch');
+  batches.forEach((b, i) => {
+    if (i > 0) b.remove();
+    else {
+      b.querySelector('.simNewShares').value = '';
+      b.querySelector('.simNewPrice').value = '';
+    }
+  });
+  simBatchCount = 1;
+  document.getElementById('simResultBox').style.display = 'none';
+}
+
+/* ============================================================
+   محاكاة DCA
+   ============================================================ */
+function addSimBatch() {
+  simBatchCount++;
+  const cont = document.getElementById('simBatchesContainer');
+  const div = document.createElement('div');
+  div.className = 'form-row-2 sim-batch';
+  div.innerHTML = `<input type="number" class="simNewShares" placeholder="كمية الدفعة ${simBatchCount}" style="flex:1;">
+                   <input type="number" class="simNewPrice" placeholder="السعر المتوقع" style="flex:1;">`;
+  cont.appendChild(div);
+}
+function calcSimDCA() {
+  let totalShares = fvn('simOldShares');
+  let totalCost = totalShares * fvn('simOldPrice');
+  let newCost = 0;
+  document.querySelectorAll('.sim-batch').forEach(b => {
+    const s = parseFloat(b.querySelector('.simNewShares').value) || 0;
+    const p = parseFloat(b.querySelector('.simNewPrice').value) || 0;
+    if (s > 0 && p > 0) {
+      const fee = getFee(s, p);
+      totalShares += s;
+      totalCost += (s * p) + fee;
+      newCost += (s * p) + fee;
+    }
+  });
+  if (totalShares > 0) {
+    document.getElementById('simResShares').innerText = fmt(totalShares, 0);
+    document.getElementById('simResCost').innerText = fmt(newCost);
+    document.getElementById('simResAvg').innerText = fmt(totalCost / totalShares, 4);
+    document.getElementById('simResultBox').style.display = 'block';
+  }
+}
+
+/* ============================================================
+   التحديث العام
+   ============================================================ */
+function updateUI() {
+  renderPortfolio();
+  renderAlertBar();
+  renderHistory();
+  renderNotes();
+  renderStats();
+  renderPerformance();
+  updateUndoButton();
+}
+
+function renderAlertBar() {
+  const bar = document.getElementById('alertBar');
+  const icon = document.getElementById('alertBarIcon');
+  const text = document.getElementById('alertBarText');
+  if (!bar) return;
+
+  const slAlerts = [];
+  const tpAlerts = [];
+
+  for (const sym in state.portfolio) {
+    const pos = state.portfolio[sym];
+    const cur = livePrices[sym];
+    if (!cur) continue;
+    if (pos.sl && cur <= pos.sl) slAlerts.push({ sym, cur, sl: pos.sl });
+    if (pos.tp && cur >= pos.tp) tpAlerts.push({ sym, cur, tp: pos.tp });
+  }
+
+  if (slAlerts.length === 0 && tpAlerts.length === 0) {
+    bar.classList.remove('show', 'has-sl');
+    return;
+  }
+
+  bar.classList.add('show');
+  bar.classList.toggle('has-sl', slAlerts.length > 0);
+  icon.innerText = slAlerts.length > 0 ? '🚨' : '🎯';
+
+  let html = '';
+  if (slAlerts.length > 0) {
+    html += `<b class="txt-red">${slAlerts.length} عند وقف الخسارة:</b> `;
+    slAlerts.forEach(a => {
+      html += `<span class="alert-chip chip-sl">${a.sym} @ ${fmt(a.cur,3)} ≤ ${fmt(a.sl,3)}</span>`;
+    });
+  }
+  if (tpAlerts.length > 0) {
+    if (html) html += '<br>';
+    html += `<b class="txt-yellow">${tpAlerts.length} عند الهدف:</b> `;
+    tpAlerts.forEach(a => {
+      html += `<span class="alert-chip chip-tp">${a.sym} @ ${fmt(a.cur,3)} ≥ ${fmt(a.tp,3)}</span>`;
+    });
+  }
+  text.innerHTML = html;
+}
+
+function renderStats() {
+  let equity = 0, totalPnl = 0, wins = 0, losses = 0, unrealized = 0;
+  for (const sym in state.portfolio) {
+    const pos = state.portfolio[sym];
+    equity += pos.totalCost;
+    const cur = livePrices[sym];
+    if (cur > 0) unrealized += ((cur - pos.avgPrice) * pos.shares) - getFee(pos.shares, cur);
+  }
+  state.history.forEach(r => {
+    if (r.type !== 'purify') {
+      totalPnl += r.pnl;
+      if (r.pnl > 0) wins++; else if (r.pnl < 0) losses++;
+    }
+  });
+
+  const ce = document.getElementById('uiCash');
+  ce.innerText = fmt(state.cash);
+  ce.className = state.cash < 0 ? 'stat-val txt-red' : 'stat-val txt-cyan';
+
+  document.getElementById('uiEquity').innerText = fmt(equity);
+
+  const ure = document.getElementById('uiUnrealized');
+  if (Object.keys(livePrices).length > 0) {
+    ure.innerText = fmt(unrealized);
+    ure.className = unrealized >= 0 ? 'stat-val txt-green' : 'stat-val txt-red';
+  } else {
+    ure.innerText = '—';
+    ure.className = 'stat-val txt-muted';
+  }
+
+  const pe = document.getElementById('uiPnl');
+  pe.innerText = fmt(totalPnl);
+  pe.className = totalPnl >= 0 ? 'stat-val txt-green' : 'stat-val txt-red';
+
+  document.getElementById('uiWinRate').innerText =
+    fmt((wins + losses) === 0 ? 0 : (wins / (wins + losses) * 100), 1) + ' %';
+
+  document.getElementById('uiPurification').innerText = fmt(state.purification || 0);
+}
+
+function renderPortfolio() {
+  const tbody = document.getElementById('portfolioBody');
+  tbody.innerHTML = '';
+  const keys = Object.keys(state.portfolio);
+  if (!keys.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="9">لا يوجد أسهم في المحفظة حالياً</td></tr>';
+    return;
+  }
+  keys.forEach(sym => {
+    const pos = state.portfolio[sym];
+    const cur = livePrices[sym] || 0;
+    const hasCur = cur > 0;
+    const pnlAmt = hasCur ? ((cur - pos.avgPrice) * pos.shares) - getFee(pos.shares, cur) : 0;
+    const pnlPct = hasCur ? (pnlAmt / pos.totalCost * 100) : 0;
+    const sl = pos.sl || 0;
+    const tp = pos.tp || 0;
+
+    let statusHtml = '<span class="status-badge st-none">—</span>';
+    if (hasCur) {
+      if (sl > 0 && cur <= sl) statusHtml = '<span class="status-badge st-sl">⛔ وقف خسارة</span>';
+      else if (tp > 0 && cur >= tp) statusHtml = '<span class="status-badge st-tp">🎯 عند الهدف</span>';
+      else if (pnlAmt >= 0) statusHtml = `<span class="status-badge st-profit">▲ ${fmt(pnlPct,1)}%</span>`;
+      else statusHtml = `<span class="status-badge st-loss">▼ ${fmt(Math.abs(pnlPct),1)}%</span>`;
+    }
+
+    let sltpHtml = '';
+    if (sl > 0) sltpHtml += `<span style="font-size:10px;color:var(--red);">SL:${fmt(sl,3)}</span> `;
+    if (tp > 0) sltpHtml += `<span style="font-size:10px;color:var(--green);">TP:${fmt(tp,3)}</span>`;
+
+    const priceDisplay = hasCur
+      ? `<span class="price-cell-val txt-cyan" data-action="edit-price" data-sym="${sym}">${fmt(cur,3)}</span>`
+      : `<span class="price-cell-val note-empty" data-action="edit-price" data-sym="${sym}">—</span>`;
+
+    const pnlDisplay = hasCur
+      ? `<span class="${pnlAmt >= 0 ? 'txt-green' : 'txt-red'}" style="font-weight:700;">${pnlAmt >= 0 ? '+' : ''}${fmt(pnlAmt)}</span>`
+      : '<span style="color:var(--text-muted);">—</span>';
+
+    const noteText = pos.note || '';
+    const noteHtml = noteText
+      ? `<span class="note-preview" title="${noteText}" data-action="toggle-note" data-sym="${sym}">${noteText}</span>`
+      : `<span class="note-empty" data-action="toggle-note" data-sym="${sym}">+</span>`;
+
+    let rowClass = '';
+    if (hasCur && sl > 0 && cur <= sl) rowClass = 'row-sl';
+    else if (hasCur && tp > 0 && cur >= tp) rowClass = 'row-tp';
+
+    const tr = document.createElement('tr');
+    if (rowClass) tr.className = rowClass;
+    tr.innerHTML = `
+      <td><b class="txt-cyan">${sym}</b>${sltpHtml ? '<br><span style="white-space:nowrap;">'+sltpHtml+'</span>' : ''}</td>
+      <td>${fmt(pos.shares, 0)}</td>
+      <td class="txt-orange">${fmt(pos.avgPrice, 4)}</td>
+      <td>${fmt(pos.totalCost)}</td>
+      <td>${priceDisplay}</td>
+      <td>${pnlDisplay}</td>
+      <td>${statusHtml}</td>
+      <td>${noteHtml}</td>
+      <td>
+        <button class="act-btn bg-green"  data-action="dca"    data-sym="${sym}" title="زيادة الكمية">➕ تزويد</button>
+        <button class="act-btn bg-orange" data-action="sell"   data-sym="${sym}" title="بيع كمية">💰 بيع</button>
+        <button class="act-btn bg-purple" data-action="delist" data-sym="${sym}" title="إفلاس أو شطب نهائي">⚰️ شطب</button>
+        <button class="act-btn bg-gray"   data-action="edit"   data-sym="${sym}" title="تعديل الكمية/المتوسط">✏️ تعديل</button>
+        <button class="act-btn bg-cyan"   data-action="sltp"   data-sym="${sym}" title="ضبط الأهداف">🎯 أهداف</button>
+      </td>`;
+
+    const noteRow = document.createElement('tr');
+    noteRow.id = `noterow-${sym}`;
+    noteRow.className = 'expand-row';
+    noteRow.style.display = 'none';
+    noteRow.innerHTML = `<td colspan="9">
+      <textarea id="noteinput-${sym}" placeholder="سبب الدخول، خطتك...">${noteText}</textarea>
+      <div style="display:flex;gap:6px;margin-top:6px;justify-content:flex-end;">
+        <button class="btn-system" style="padding:4px 12px;font-size:12px;" data-action="save-note" data-sym="${sym}">💾 حفظ</button>
+        <button class="btn-system" style="padding:4px 12px;font-size:12px;" data-action="toggle-note" data-sym="${sym}">إغلاق</button>
+      </div></td>`;
+
+    tbody.appendChild(tr);
+    tbody.appendChild(noteRow);
+  });
+}
+
+/* ============================================================
+   الأداء الشهري
+   ============================================================ */
+function getCurrentMonthStr() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+}
+function getMonthLabel(monthStr) {
+  const [y, m] = monthStr.split('-');
+  const d = new Date(parseInt(y), parseInt(m) - 1, 1);
+  return d.toLocaleDateString('ar-SA', { month: 'long', year: 'numeric' });
+}
+
+function populateMonthDropdown() {
+  const sel = document.getElementById('perfMonthSelect');
+  if (!sel) return;
+  const currentMonth = getCurrentMonthStr();
+  const months = new Set();
+  months.add(currentMonth);
+  state.history.forEach(r => { if (r.date) months.add(r.date.slice(0, 7)); });
+  const sorted = Array.from(months).sort().reverse();
+
+  if (!selectedPerfMonth || !months.has(selectedPerfMonth)) {
+    selectedPerfMonth = currentMonth;
+  }
+
+  sel.innerHTML = sorted.map(m =>
+    `<option value="${m}" ${m === selectedPerfMonth ? 'selected' : ''}>${getMonthLabel(m)}</option>`
+  ).join('');
+
+  const btn = document.getElementById('perfBackToNow');
+  if (btn) btn.style.display = (selectedPerfMonth === currentMonth) ? 'none' : 'inline-block';
+}
+function onPerfMonthChange(value) { selectedPerfMonth = value; renderPerformance(); }
+function backToCurrentMonth() { selectedPerfMonth = getCurrentMonthStr(); renderPerformance(); }
+
+function renderPerformance() {
+  populateMonthDropdown();
+  const grid = document.getElementById('perfGrid');
+  if (!grid) return;
+
+  const monthStr = selectedPerfMonth || getCurrentMonthStr();
+  const [yearStr, monthNumStr] = monthStr.split('-');
+  const selDate = new Date(parseInt(yearStr), parseInt(monthNumStr) - 1, 1);
+  const prevDate = new Date(selDate.getFullYear(), selDate.getMonth() - 1, 1);
+  const prevMonthStr = `${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
+
+  const recs = state.history.filter(r => r.date.startsWith(monthStr) && r.type !== 'purify');
+  const prevRecs = state.history.filter(r => r.date.startsWith(prevMonthStr) && r.type !== 'purify');
+
+  const totalPnl = recs.reduce((s,r) => s + r.pnl, 0);
+  const prevPnl = prevRecs.reduce((s,r) => s + r.pnl, 0);
+  const wins = recs.filter(r => r.pnl > 0);
+  const losses = recs.filter(r => r.pnl < 0);
+  const best = wins.slice().sort((a,b) => b.pnl - a.pnl)[0];
+  const worst = losses.slice().sort((a,b) => a.pnl - b.pnl)[0];
+  const purifyThisMonth = state.history
+    .filter(r => r.date.startsWith(monthStr) && r.type === 'purify')
+    .reduce((s,r) => s + Math.abs(r.pnl), 0);
+
+  let equity = 0;
+  for (const s in state.portfolio) equity += state.portfolio[s].totalCost;
+  const cashRatio = (equity + state.cash) > 0 ? (state.cash / (equity + state.cash) * 100) : 0;
+
+  let compareHtml = '<div class="perf-compare txt-muted">—</div>';
+  if (prevRecs.length > 0 || recs.length > 0) {
+    const diff = totalPnl - prevPnl;
+    const color = diff >= 0 ? 'txt-green' : 'txt-red';
+    const arrow = diff >= 0 ? '▲' : '▼';
+    compareHtml = `<div class="perf-compare ${color}">${arrow} ${fmt(Math.abs(diff))} عن الشهر السابق</div>`;
+  }
+
+  grid.innerHTML = `
+    <div class="perf-card">
+      <div class="perf-label">صافي الشهر</div>
+      <div class="perf-val ${totalPnl >= 0 ? 'txt-green' : 'txt-red'}">${totalPnl >= 0 ? '+' : ''}${fmt(totalPnl)}</div>
+      ${compareHtml}
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">معدل الربح</div>
+      <div class="perf-val txt-orange">${fmt(recs.length > 0 ? (wins.length / recs.length * 100) : 0, 1)}%</div>
+      <div class="perf-compare txt-muted">${wins.length}✓ / ${losses.length}✗</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">عدد الصفقات</div>
+      <div class="perf-val">${recs.length}</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">نسبة الكاش (الآن)</div>
+      <div class="perf-val txt-cyan">${fmt(cashRatio, 1)}%</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">أفضل صفقة</div>
+      <div class="perf-val txt-green" style="font-size:14px;">${best ? best.symbol + ' +' + fmt(best.pnl) : '—'}</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">أسوأ صفقة</div>
+      <div class="perf-val txt-red" style="font-size:14px;">${worst ? worst.symbol + ' ' + fmt(worst.pnl) : '—'}</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">تطهير هذا الشهر</div>
+      <div class="perf-val txt-purple">${fmt(purifyThisMonth)}</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-label">رصيد التطهير الحالي</div>
+      <div class="perf-val txt-purple">${fmt(state.purification || 0)}</div>
+    </div>`;
+}
+
+/* ============================================================
+   الأرشيف
+   ============================================================ */
+function renderHistory() {
+  const sym = (document.getElementById('filterSymbol')?.value || '').toUpperCase().trim();
+  const type = document.getElementById('filterType')?.value || '';
+  const from = document.getElementById('filterDateFrom')?.value || '';
+  const to = document.getElementById('filterDateTo')?.value || '';
+  const tbody = document.getElementById('historyBody');
+  tbody.innerHTML = '';
+  let shown = 0;
+
+  for (let i = state.history.length - 1; i >= 0; i--) {
+    const r = state.history[i];
+    if ((sym && !r.symbol.toUpperCase().includes(sym)) ||
+        (type && r.type !== type) ||
+        (from && r.date < from) ||
+        (to && r.date > to)) continue;
+
+    let opName = 'بيع', opClass = 'op-sell';
+    if (r.type === 'delist') { opName = 'شطب'; opClass = 'op-delist'; }
+    if (r.type === 'purify') { opName = 'تطهير'; opClass = 'op-purify'; }
+
+    const tr = document.createElement('tr');
+    tr.dataset.idx = i;
+    tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="hist-chk" data-idx="${i}" style="cursor:pointer;width:auto;"></td>
+      <td style="color:var(--text-muted);font-size:11px;">${r.date}</td>
+      <td class="txt-cyan">${r.symbol}</td>
+      <td><span class="op-badge ${opClass}">${opName}</span></td>
+      <td>${r.shares ? fmt(r.shares, 0) : '—'}</td>
+      <td class="${r.pnl >= 0 ? 'txt-green' : 'txt-red'}" style="font-weight:700;">${r.pnl >= 0 ? '+' : ''}${fmt(r.pnl)}</td>
+      <td style="font-size:11px;color:var(--text-muted);">${r.detail || ''}</td>`;
+    tbody.appendChild(tr);
+    shown++;
+  }
+  if (!shown) tbody.innerHTML = '<tr class="empty-row"><td colspan="7">لا توجد سجلات</td></tr>';
+}
+
+function clearFilters() {
+  ['filterSymbol','filterType','filterDateFrom','filterDateTo'].forEach(id => document.getElementById(id).value = '');
+  renderHistory();
+}
+function updateBulkBar() {
+  const checked = document.querySelectorAll('.hist-chk:checked');
+  const count = document.getElementById('selectedCount');
+  const btn = document.getElementById('deleteSelectedBtn');
+  if (checked.length > 0) {
+    count.innerText = `تم تحديد ${checked.length}`;
+    count.style.display = 'inline';
+    btn.style.display = 'inline-block';
+  } else {
+    count.style.display = 'none';
+    btn.style.display = 'none';
+    document.getElementById('selectAllHistory').checked = false;
+  }
+}
+function deleteSelectedHistory() {
+  const checked = document.querySelectorAll('.hist-chk:checked');
+  if (checked.length === 0) return;
+  showConfirm('حذف متعدد', `هل تريد حذف ${checked.length} سجل من الأرشيف؟`, () => {
+    const indices = Array.from(checked).map(c => parseInt(c.dataset.idx)).sort((a,b) => b - a);
+    indices.forEach(idx => state.history.splice(idx, 1));
+    saveState('حذف متعدد');
+    document.getElementById('selectAllHistory').checked = false;
+    updateBulkBar();
+    closeModal('actionModal');
+  });
+}
+
+/* ============================================================
+   الأسعار الحية
+   ============================================================ */
+async function refreshPrices(silent = false) {
+  if (!globalSettings.finnhubKey) {
+    if (!silent) {
+      showNotif('⚠️','لا يوجد مفتاح','أضف مفتاح Finnhub في الإعدادات','var(--orange)');
+      openSettings();
+    }
+    return;
+  }
+  const symbols = Object.keys(state.portfolio);
+  if (symbols.length === 0) {
+    if (!silent) showNotif('ℹ️','المحفظة فارغة','لا توجد أسهم لتحديثها','var(--cyan)');
+    return;
+  }
+  const dot = document.getElementById('fetchDot');
+  dot.className = 'fetch-dot fetching';
+
+  let ok = 0;
+  for (let i = 0; i < symbols.length; i++) {
+    try {
+      const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbols[i]}&token=${globalSettings.finnhubKey}`);
+      const data = await res.json();
+      if (data && data.c > 0) { livePrices[symbols[i]] = data.c; ok++; }
+    } catch (e) { console.warn('فشل جلب', symbols[i], e); }
+    if (i < symbols.length - 1) await new Promise(r => setTimeout(r, 1100));
+  }
+
+  document.getElementById('priceTimestamp').innerText = new Date().toLocaleTimeString('ar-SA');
+  updateUI();
+  checkSLTPAlerts();
+
+  dot.className = ok > 0 ? 'fetch-dot ok' : 'fetch-dot err';
+  if (!silent) {
+    if (ok > 0) showNotif('✅','تم التحديث',`${ok}/${symbols.length} سهم`,'var(--green)');
+    else showNotif('❌','فشل التحديث','تحقق من المفتاح أو الإنترنت','var(--red)');
+  }
+}
+
+function checkSLTPAlerts() {
+  let alerts = [];
+  for (const sym in state.portfolio) {
+    const pos = state.portfolio[sym];
+    const cur = livePrices[sym];
+    if (!cur) continue;
+    if (pos.sl && cur <= pos.sl) alerts.push({ type: 'sl', sym, cur, target: pos.sl });
+    if (pos.tp && cur >= pos.tp) alerts.push({ type: 'tp', sym, cur, target: pos.tp });
+  }
+  if (alerts.length === 0) return;
+
+  const first = alerts[0];
+  if (first.type === 'sl') {
+    showNotif('⛔', `وقف خسارة — ${first.sym}`,
+      `${fmt(first.cur,3)} وصل للحد ${fmt(first.target,3)}`,
+      'var(--red)', true);
+  } else {
+    showNotif('🎯', `هدف — ${first.sym}`,
+      `${fmt(first.cur,3)} وصل للهدف ${fmt(first.target,3)}`,
+      'var(--green)', true);
+  }
+  if (alerts.length > 1) {
+    setTimeout(() => showNotif('🔔','تنبيهات أخرى',`${alerts.length-1} تنبيه آخر`,'var(--orange)'), 1500);
+  }
+}
+
+/* ============================================================
+   تحديث تلقائي صامت للأسعار عند فتح الصفحة
+   ============================================================ */
+function autoRefreshPricesOnLoad() {
+  if (!globalSettings.finnhubKey) return;
+  if (Object.keys(state.portfolio).length === 0) return;
+  refreshPrices(true);
+}
+
+/* ============================================================
+   Undo
+   ============================================================ */
+function doUndo() {
+  if (undoStack.length === 0) {
+    return showNotif('⚠️','لا يوجد','لا توجد عمليات للتراجع','var(--orange)');
+  }
+  const last = undoStack.pop();
+  state = JSON.parse(last.snap);
+  persistActivePortfolioData();
+  updateUI();
+  showNotif('↩️','تم التراجع',`أُلغي: ${last.action}`,'var(--cyan)');
+}
+
+/* ============================================================
+   تصدير / استيراد
+   ============================================================ */
+function exportCurrent() {
+  const name = getActivePortfolioName();
+  const type = getActivePortfolioType();
+  const payload = {
+    _type: 'single',
+    _portfolioName: name,
+    _marketType: type,
+    _exportedAt: new Date().toISOString(),
+    data: state
+  };
+  const a = document.createElement('a');
+  a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
+  const safeName = name.replace(/[^\w\u0600-\u06FF-]/g, '_');
+  a.download = `Backup_${safeName}_${getDateStr()}.json`;
+  a.click();
+  localStorage.setItem(BACKUP_KEY, Date.now().toString());
+  showNotif('💾','تم التصدير',`${name}`, 'var(--green)');
+}
+
+function exportAll() {
+  persistActivePortfolioData();
+  const all = {};
+  portfoliosList.forEach(p => {
+    const data = localStorage.getItem(PF_DATA_PREFIX + p.id);
+    all[p.id] = {
+      name: p.name,
+      type: p.type || 'us',
+      data: data ? JSON.parse(data) : { cash: 0, purification: 0, portfolio: {}, history: [], notes: [] }
+    };
+  });
+  const payload = {
+    _type: 'all',
+    _exportedAt: new Date().toISOString(),
+    _activeId: activePortfolioId,
+    portfolios: all
+  };
+  const a = document.createElement('a');
+  a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
+  a.download = `AllPortfolios_${getDateStr()}.json`;
+  a.click();
+  localStorage.setItem(BACKUP_KEY, Date.now().toString());
+  showNotif('📦','تم التصدير',`${portfoliosList.length} محفظة`, 'var(--green)');
+}
+
+function importData(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+
+      if (d._type === 'all' && d.portfolios) {
+        showConfirm('📦 استيراد كل المحافظ',
+          `الملف يحتوي <b>${Object.keys(d.portfolios).length}</b> محفظة.<br><br>
+           <b style="color:var(--red);">سيتم استبدال كل محافظك الحالية!</b><br>
+           هل تريد المتابعة؟`,
+          () => {
+            portfoliosList.forEach(p => localStorage.removeItem(PF_DATA_PREFIX + p.id));
+            const newList = [];
+            for (const id in d.portfolios) {
+              const p = d.portfolios[id];
+              newList.push({ id, name: p.name, type: p.type || 'us' });
+              localStorage.setItem(PF_DATA_PREFIX + id, JSON.stringify(p.data));
+            }
+            portfoliosList = newList;
+            localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+            const newActive = (d._activeId && d.portfolios[d._activeId]) ? d._activeId : portfoliosList[0].id;
+            activePortfolioId = newActive;
+            localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+            loadActivePortfolioData();
+            livePrices = {};
+            undoStack = [];
+            selectedPerfMonth = null;
+
+            renderPortfolioSwitcher();
+            updateUI();
+            updateUndoButton();
+            closeModal('actionModal');
+            showNotif('📦','تم الاستيراد',`${portfoliosList.length} محفظة`,'var(--green)');
+          });
+      }
+      else if (d._type === 'single' && d.data) {
+        if (portfoliosList.length >= 20) {
+          return showNotif('⚠️','حد أقصى','لا يمكن إضافة أكثر من 20 محفظة','var(--orange)');
+        }
+        const newId = genPortfolioId();
+        const rawName = d._portfolioName || 'مستوردة';
+        let name = rawName;
+        let counter = 1;
+        while (portfoliosList.find(p => p.name === name)) {
+          name = `${rawName} (${counter++})`;
+        }
+        portfoliosList.push({ id: newId, name: name, type: d._marketType || 'us' });
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+        localStorage.setItem(PF_DATA_PREFIX + newId, JSON.stringify(d.data));
+
+        persistActivePortfolioData();
+        activePortfolioId = newId;
+        localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+        loadActivePortfolioData();
+        livePrices = {};
+        undoStack = [];
+        selectedPerfMonth = null;
+
+        renderPortfolioSwitcher();
+        updateUI();
+        updateUndoButton();
+        showNotif('📂','تم الاستيراد',`محفظة جديدة: "${name}"`,'var(--green)');
+      }
+      else if (d.portfolio || d.cash !== undefined) {
+        if (portfoliosList.length >= 20) {
+          return showNotif('⚠️','حد أقصى','لا يمكن إضافة أكثر من 20 محفظة','var(--orange)');
+        }
+        const newId = genPortfolioId();
+        let name = 'مستوردة';
+        let counter = 1;
+        while (portfoliosList.find(p => p.name === name)) {
+          name = `مستوردة (${counter++})`;
+        }
+        portfoliosList.push({ id: newId, name: name, type: 'us' });
+        localStorage.setItem(PF_LIST_KEY, JSON.stringify(portfoliosList));
+
+        const normalized = {
+          cash: d.cash || 0,
+          purification: d.purification || 0,
+          portfolio: d.portfolio || {},
+          history: d.history || [],
+          notes: d.notes || []
+        };
+        localStorage.setItem(PF_DATA_PREFIX + newId, JSON.stringify(normalized));
+
+        persistActivePortfolioData();
+        activePortfolioId = newId;
+        localStorage.setItem(PF_ACTIVE_KEY, activePortfolioId);
+        loadActivePortfolioData();
+        livePrices = {};
+        undoStack = [];
+        selectedPerfMonth = null;
+
+        renderPortfolioSwitcher();
+        updateUI();
+        updateUndoButton();
+        showNotif('📂','تم الاستيراد',`محفظة جديدة: "${name}"`,'var(--green)');
+      }
+      else {
+        showNotif('❌','ملف غير صالح','الملف لا يحتوي على بيانات معروفة','var(--red)');
+      }
+    } catch (err) {
+      console.error(err);
+      showNotif('❌','خطأ','تعذّر قراءة الملف','var(--red)');
+    }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+}
+
+/* ============================================================
+   تذكير النسخة الاحتياطية
+   ============================================================ */
+function checkBackupReminder() {
+  const last = localStorage.getItem(BACKUP_KEY);
+  const week = 7 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  if (!last || (now - parseInt(last)) > week) {
+    setTimeout(() => {
+      showNotif('💾','تذكير النسخ الاحتياطي',
+        'مرّ أكثر من أسبوع — يُنصح بحفظ نسخة JSON',
+        'var(--orange)', true);
+    }, 3000);
+  }
+}
+
+/* ============================================================
+   التهيئة
+   ============================================================ */
+window.onload = function() {
+  loadGlobalSettings();
+  loadPortfoliosList();
+  loadActivePortfolioData();
+
+  applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+  renderPortfolioSwitcher();
+  updateUI();
+  updateUndoButton();
+
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  document.getElementById('selectAllHistory').addEventListener('change', e => {
+    const checked = e.target.checked;
+    document.querySelectorAll('.hist-chk').forEach(chk => chk.checked = checked);
+    updateBulkBar();
+  });
+  document.getElementById('historyBody').addEventListener('change', e => {
+    if (e.target.classList.contains('hist-chk')) updateBulkBar();
+  });
+
+  window.addEventListener('beforeunload', () => {
+    persistActivePortfolioData();
+  });
+
+  checkBackupReminder();
+
+  // تحديث تلقائي صامت للأسعار بعد ثانيتين من فتح الصفحة
+  setTimeout(autoRefreshPricesOnLoad, 2000);
+};
+</script>
+</body>
+</html>
