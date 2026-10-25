@@ -292,6 +292,67 @@ tr.row-tp td:first-child { border-right: 3px solid var(--yellow); }
 .market-option .flag { font-size: 28px; display: block; margin-bottom: 6px; }
 .market-option .name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
 .market-option .desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+  /* ============================================================
+   تحسينات خاصة بشاشة الجوال (Mobile UI)
+   ============================================================ */
+@media (max-width: 900px) {
+  /* 1. تكبير الخطوط قليلاً للقراءة المريحة */
+  body { padding: 10px; font-size: 14px; }
+  
+  /* 2. ترتيب الأزرار العلوية بشكل أفضل */
+  .header { flex-direction: column; align-items: stretch; }
+  .header h1 { justify-content: center; font-size: 20px; }
+  .header-actions { justify-content: center; gap: 5px; }
+  
+  /* 3. إصلاح مربع اختيار المحفظة (المربع الأزرق) */
+  .portfolio-switch { width: 100%; justify-content: space-between; padding: 8px; }
+  .portfolio-switch select { flex: 1; text-align: center; }
+  
+  /* 4. جعل الأزرار العلوية عريضة ومريحة للمس */
+  .btn-system { padding: 10px 12px; font-size: 13px; flex: 1; text-align: center; }
+
+  /* 5. تحويل الجدول إلى "بطاقات" لتفادي السحب الأفقي */
+  .table-wrapper table thead { display: none; } /* إخفاء العناوين */
+  .table-wrapper table tr { 
+    display: block; 
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    margin-bottom: 10px; 
+    padding: 10px;
+    background: var(--bg-box);
+  }
+  .table-wrapper table td { 
+    display: flex; 
+    justify-content: space-between; 
+    border: none; 
+    padding: 6px 0; 
+    white-space: normal;
+    text-align: left;
+  }
+  /* إضافة اسم العمود قبل القيمة داخل البطاقة */
+  .table-wrapper table td::before { 
+    content: attr(data-label); 
+    font-weight: bold; 
+    color: var(--text-muted); 
+    font-size: 12px;
+  }
+  
+  /* 6. إصلاح صفوف الإجراءات (تزويد، بيع...) لتكون أزراراً كبيرة */
+  .table-wrapper table td:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .table-wrapper table td:last-child::before { display: none; } /* إخفاء كلمة إجراءات */
+  .act-btn { flex: 1; padding: 10px; font-size: 13px; border-radius: 6px; }
+
+  /* 7. تكبير أزرار الحاسبة والمحاكاة */
+  .btn-action { padding: 14px; font-size: 15px; }
+}
 </style>
 </head>
 <body>
