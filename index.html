@@ -286,7 +286,7 @@ tr.row-tp td:first-child { border-right: 3px solid var(--yellow); }
 .market-option .desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
 
 /* ============================================================
-   تحسينات خاصة بشاشة الجوال (Mobile UI) - الإصدار المكبر
+   تحسينات خاصة بشاشة الجوال (Mobile UI) 
    ============================================================ */
 @media (max-width: 900px) {
   body { padding: 12px; font-size: 16px !important; }
@@ -427,7 +427,16 @@ tr.row-tp td:first-child { border-right: 3px solid var(--yellow); }
     <div class="stat-title">صافي الأرباح المحققة</div>
     <div class="stat-val" id="uiPnl">0.00 $</div>
   </div>
-  <!-- تم حذف معدل الصفقات الرابحة وصندوق التطهير من هنا -->
+  <div class="stat-box" id="boxWinRate">
+    <div class="stat-title">معدل الصفقات الرابحة</div>
+    <div class="stat-val txt-orange" id="uiWinRate">0 %</div>
+  </div>
+  <div class="stat-box" id="boxPurification" style="border-color:var(--purple);">
+    <div class="stat-title" style="color:var(--purple);">صندوق التطهير
+      <button class="cash-btn" style="color:var(--purple);" onclick="payPurification()">💸</button>
+    </div>
+    <div class="stat-val txt-purple" id="uiPurification">0.00 $</div>
+  </div>
 </div>
 
 <!-- ============ لوحة الأداء الشهري ============ -->
@@ -619,11 +628,9 @@ function getFeeDetails(N, P) {
   const baseValue = N * P;
 
   if (type === 'sa') {
-    // السوق السعودي: 0.155% فقط (بدون حد أدنى، بدون ضريبة)
     const comm = baseValue * 0.00155;
     return { comm: comm, tax: 0, total: comm, type: 'sa' };
   } else {
-    // السوق الأمريكي: max(1.99, N × 0.0199)، بحد أقصى 2.99%، ضريبة 15%
     let comm = N * 0.0199;
     comm = Math.max(1.99, comm);
     const maxComm = baseValue * 0.0299;
@@ -1555,7 +1562,10 @@ function renderStats() {
   pe.innerText = fmt(totalPnl);
   pe.className = totalPnl >= 0 ? 'stat-val txt-green' : 'stat-val txt-red';
 
-  // تم حذف تحديث معدل الصفقات الرابحة والتطهير من هنا
+  document.getElementById('uiWinRate').innerText =
+    fmt((wins + losses) === 0 ? 0 : (wins / (wins + losses) * 100), 1) + ' %';
+
+  document.getElementById('uiPurification').innerText = fmt(state.purification || 0);
 }
 
 function renderPortfolio() {
@@ -1606,8 +1616,6 @@ function renderPortfolio() {
 
     const tr = document.createElement('tr');
     if (rowClass) tr.className = rowClass;
-    
-    // إضافة data-label لكل خلية لكي تظهر في الجوال كبطاقات
     tr.innerHTML = `
       <td data-label="الرمز"><b class="txt-cyan">${sym}</b>${sltpHtml ? '<br><span style="white-space:nowrap;">'+sltpHtml+'</span>' : ''}</td>
       <td data-label="الكمية">${fmt(pos.shares, 0)}</td>
@@ -1695,8 +1703,11 @@ function renderPerformance() {
   const prevPnl = prevRecs.reduce((s,r) => s + r.pnl, 0);
   const wins = recs.filter(r => r.pnl > 0);
   const losses = recs.filter(r => r.pnl < 0);
-  
-  // تم حذف حساب أفضل/أسوأ صفقة وتطهير الشهر من هنا
+  const best = wins.slice().sort((a,b) => b.pnl - a.pnl)[0];
+  const worst = losses.slice().sort((a,b) => a.pnl - b.pnl)[0];
+  const purifyThisMonth = state.history
+    .filter(r => r.date.startsWith(monthStr) && r.type === 'purify')
+    .reduce((s,r) => s + Math.abs(r.pnl), 0);
 
   let equity = 0;
   for (const s in state.portfolio) equity += state.portfolio[s].totalCost;
@@ -1729,8 +1740,22 @@ function renderPerformance() {
       <div class="perf-label">نسبة الكاش (الآن)</div>
       <div class="perf-val txt-cyan">${fmt(cashRatio, 1)}%</div>
     </div>
-    <!-- تم حذف بطاقات أفضل صفقة، أسوأ صفقة، التطهير من هنا -->
-  `;
+    <div class="perf-card" id="cardBestTrade">
+      <div class="perf-label">أفضل صفقة</div>
+      <div class="perf-val txt-green" style="font-size:14px;">${best ? best.symbol + ' +' + fmt(best.pnl) : '—'}</div>
+    </div>
+    <div class="perf-card" id="cardWorstTrade">
+      <div class="perf-label">أسوأ صفقة</div>
+      <div class="perf-val txt-red" style="font-size:14px;">${worst ? worst.symbol + ' ' + fmt(worst.pnl) : '—'}</div>
+    </div>
+    <div class="perf-card" id="cardPurifyMonth">
+      <div class="perf-label">تطهير هذا الشهر</div>
+      <div class="perf-val txt-purple">${fmt(purifyThisMonth)}</div>
+    </div>
+    <div class="perf-card" id="cardPurifyBalance">
+      <div class="perf-label">رصيد التطهير الحالي</div>
+      <div class="perf-val txt-purple">${fmt(state.purification || 0)}</div>
+    </div>`;
 }
 
 /* ============================================================
